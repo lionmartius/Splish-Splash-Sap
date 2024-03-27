@@ -46,7 +46,7 @@ We can then direclty convert this pre-processed VWC data into stem VWC or apply 
 The following equations are derived from our calibration work in tropical trees and palms:
 
 $θ_{\text{stem}} = 1.83658 \times θ_{\text{Teros12}} - 0.08189$
- <img align = "right" width = "600" height = "400" src="https://github.com/lionmartius/Splish-Splash-Sap/assets/146541125/67240b81-6f29-4241-b95c-728232eee9d6">
+ <img align = "right" width = "450" height = "300" src="https://github.com/lionmartius/Splish-Splash-Sap/assets/146541125/67240b81-6f29-4241-b95c-728232eee9d6">
           
 
 $θ_{\text{stem}}=0.2227\times \sqrtε_{\text{stem}}-0.396 $ 
