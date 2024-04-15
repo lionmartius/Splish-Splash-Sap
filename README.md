@@ -4,7 +4,7 @@
 Trees and whole forest ecosystems are becoming increasingly exposed to droughts under climate change. Accurate capture of vegetation water content will substantially advance how we quantify drought stress and related mortality risk in trees. In our latest publication, we established a first generic relationship between stem water content and dielectric permittivity in woody tissue, using electromagnetic sensors. This protocol is designed to facilitate the installation of electromagnetic sensors for monitoring tree water content at high temporal resolution. Here, you will be able to find a detailed description of the installtion procedure (a list of DOs and DON'Ts), the right tools needed for installation & data processing scripts written in R-language, using calibration equations (especially the slope) derived from Martius et al., 2024. Within our study, we used modified Teros12 (Meter Group, Pullman, WA, USA) sensors, with shortened waveguides (3 cm) to assure that the signal is dominated by sapwood water content, as uncertainties remain on the physiological functionality of heartwood. Please adjust the protocol if other sensor types or waveguid lenghts are chosen, accordingly.
 
 ## Tools and Preparation
-We advise to shorten waveguides before going into the field. Sensor needle cutting should be done with high precision tools. Differences in needle lenghts affect the intercept of the sensor readings. While we believe that the slope remains unaffected, more data is needed to support this claim. We cut all our Teros12 sensors to 3 cm sensor length. You will need the following tools:
+We advise to shorten waveguides before going into the field. Sensor needle cutting should be done with as much precision as possible. Differences in needle lenghts affect the intercept of the sensor readings. We cut all our Teros12 sensors to 3 cm sensor length. You will need the following tools:
 - FDR/TDR sensor
 - Environmental/radiation shield
 - Datalogger and relevant power supply
@@ -38,14 +38,14 @@ When using the Teros12 sensors in combination with ZL6 dataloggers, then the out
 
 $`\theta (m^3/m^3) = 3.879 \times 10^{−4} \times RAW − 0.6956 `$
 
-When using a different sensor - logger combination, we will likely either be measuring dielectric permittivity direclty or raw data, the latter of which we will need to convert into dielctric permittivity first, using the Topp equation (Topp et al., 1980). 
+When using a different sensor - logger combination, we will likely either be measuring dielectric permittivity direclty or raw data, the latter of which we will need to convert into dielctric permittivity first, using the following equation. 
 
 $`\epsilon = (2.887 \times 10^{-9} \times RAW^3 - 2.080 \times 10^{-5} \times RAW^2 + 5.276 \times 10^{-2} \times RAW -43.39 )^2`$
 
-We can then direclty convert this pre-processed VWC data into stem VWC or apply the calibration equation using dielectric permittivity. We only recommend using the VWC derived calibration equation, when using the same sensor types (Teros11/12 capacitance sensors with shortened waveguides, 3 cm). For all other sensor types, we recommend using the calibration equation derived using dielectric permittivity.
+We can then convert measures of dielectric permittivity into stem VWC when working with the species from our paper.
 The following equations are derived from our calibration work in tropical trees and palms:
 
-$θ_{\text{stem}} = 1.83658 \times θ_{\text{Teros12}} - 0.08189$
+
  <img align = "right" width = "450" height = "300" src="https://github.com/lionmartius/Splish-Splash-Sap/assets/146541125/67240b81-6f29-4241-b95c-728232eee9d6">
           
 
