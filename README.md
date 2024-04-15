@@ -43,7 +43,7 @@ When using a different sensor - logger combination, we will likely either be mea
 $`\epsilon = (2.887 \times 10^{-9} \times RAW^3 - 2.080 \times 10^{-5} \times RAW^2 + 5.276 \times 10^{-2} \times RAW -43.39 )^2`$
 
 We can then convert measures of dielectric permittivity into stem VWC when working with the species from our paper.
-The following equations are derived from our calibration work in tropical trees and palms:
+The following equation is derived from our calibration work in tropical trees and palms:
 
 
  <img align = "right" width = "450" height = "300" src="https://github.com/lionmartius/Splish-Splash-Sap/assets/146541125/67240b81-6f29-4241-b95c-728232eee9d6">
