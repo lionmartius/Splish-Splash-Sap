@@ -46,10 +46,14 @@ We can then convert measures of dielectric permittivity into stem VWC when worki
 The following equation is derived from our calibration work in tropical trees and palms:
 
 
- <img align = "right" width = "450" height = "300" src="https://github.com/lionmartius/Splish-Splash-Sap/assets/146541125/67240b81-6f29-4241-b95c-728232eee9d6">
+ <img align = "right" width = "450" height = "300" src="https://github.com/lionmartius/Splish-Splash-Sap/assets/146541125/5d2ca122-0cc9-4d10-b2ac-3015060789ae">
           
 
+
 $θ_{\text{stem}}=0.2227\times \sqrtε_{\text{stem}}-0.396 $ 
+
+
+Please note that our findigs suggest that there are species-specific random variations in the intercepts which negatively affect the accuracy of the measurements when working with different species. However, we found that the slope of the calibration is _universal_ for woody tissue in general. Hence, the calibration can be used to estimate __relative__ changes in stem water content or stem water deficits from the maximum accurately.
 
                      
 
