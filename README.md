@@ -41,7 +41,14 @@ $`\theta (m^3/m^3) = 3.879 \times 10^{−4} \times RAW − 0.6956 `$
 When using a different sensor - logger combination, we will likely either be measuring dielectric permittivity direclty or raw data, the latter of which we will need to convert into dielctric permittivity first, using the following equation. 
 
 $`\epsilon = (2.887 \times 10^{-9} \times RAW^3 - 2.080 \times 10^{-5} \times RAW^2 + 5.276 \times 10^{-2} \times RAW -43.39 )^2`$
+```R
+# Calculate dielectric permittivity from the RAW sensor output
 
+dt$ep <- (2.887 * 10^-9 * dt$RAW^3 - 2.080 
+               * 10^-5 * dt$RAW^2 + 5.276 * 10^-2 * dt$RAW -43.39 )^2
+
+dt$ep.sqrt <- sqrt(dt$ep)  # apply square root transformation 
+```
 We can then convert measures of dielectric permittivity into stem VWC when working with the species from our paper.
 The following equation is derived from our calibration work in tropical trees and palms:
 
@@ -51,9 +58,38 @@ The following equation is derived from our calibration work in tropical trees an
 
 
 $θ_{\text{stem}}=0.2227\times \sqrtε_{\text{stem}}-0.396 $ 
+```R
+# Estimate the stem water content using the TTC
+
+dt$StWC <- 0.2227 * dt$ep.sqrt - 0.396
+```
 
 
 Please note that our findigs suggest that there are species-specific random variations in the intercepts which negatively affect the accuracy of the measurements when working with different species. However, we found that the slope of the calibration is _universal_ for woody tissue in general. Hence, the calibration can be used to estimate __relative__ changes in stem water content or stem water deficits from the maximum accurately.
+
+The intercept becomes unimportant when Normalizing the water content data; Here is an example of how to calculate stem water deficit from the maximum value:
+
+```R
+ Create an empty column for deficit
+dt$def <- NA
+
+# Loop through each species
+for (species in unique(dt$species)) {
+  # Subset the data for the current species
+  sub_dt <- dt[dt$species == species, ]
+  
+  # Find the maximum saturation value for the current species
+  StWC_max <- max(sub_dt$StWC, na.rm = TRUE)
+  
+  # Calculate RWC for the current species using the modified intercept
+  sub_dt$def <- sub_dt$StWC - StWC_max
+  
+  # Merge the calculated RWC values back into the main dataset
+  dt[dt$species == species, "def"] <- sub_dt$def
+}
+```
+
+
 
                      
 
