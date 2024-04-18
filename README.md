@@ -44,52 +44,79 @@ $`\epsilon = (2.887 \times 10^{-9} \times RAW^3 - 2.080 \times 10^{-5} \times RA
 ```R
 # Calculate dielectric permittivity from the RAW sensor output
 
-dt$ep <- (2.887 * 10^-9 * dt$RAW^3 - 2.080 
-               * 10^-5 * dt$RAW^2 + 5.276 * 10^-2 * dt$RAW -43.39 )^2
+dt$ep <- (2.887 * 10^-9 * dt$RAW^3 - 2.080 * 10^-5 * dt$RAW^2 + 5.276 * 10^-2 * dt$RAW -43.39 )^2
 
 dt$ep.sqrt <- sqrt(dt$ep)  # apply square root transformation 
 ```
+### Calculating woody tissue water content
 We can then convert measures of dielectric permittivity into stem VWC when working with the species from our paper.
-The following equation is derived from our calibration work in tropical trees and palms:
-
-
- <img align = "right" width = "450" height = "300" src="https://github.com/lionmartius/Splish-Splash-Sap/assets/146541125/5d2ca122-0cc9-4d10-b2ac-3015060789ae">
-          
+The following equation is derived from our calibration work in tropical trees and palms:         
 
 
 $θ_{\text{stem}}=0.2227\times \sqrtε_{\text{stem}}-0.396 $ 
+ <img align = "right" width = "450" height = "300" src="https://github.com/lionmartius/Splish-Splash-Sap/assets/146541125/5d2ca122-0cc9-4d10-b2ac-3015060789ae">
 ```R
 # Estimate the stem water content using the TTC
 
 dt$StWC <- 0.2227 * dt$ep.sqrt - 0.396
 ```
+### Applying temperature corrections
+Our findings suggested that FDR sensors are highly temperature sensitive, which can lead to artefactual changes in water content. If the sensor is exposed to larger diurnal or seasonal temperature fluctuations, especially in highly seasonal ecosystems, it is important to apply the following temeperature correction:
 
+```R
+# Apply temperature corrections
+mean(dt$t, na.rm = T) # mean T is a suitable reference point
+                      # 25.3°C 
+dt$t_diff <- as.numeric(dt$t) - mean(dt$t, na.rm = T)
+                      # calculate t - difference from reference (mean)
+t_effect <- -0.000974 # temperature effect coefficient (from our study)
+
+# Temperature correction - StWC.T
+dt$StWC.T <- dt$StWC - dt$t_diff*t_effect  # this is the column for the temperature
+                                           # corrected stem water content
+require(ggplot2)
+ggplot(data = dt[dt$species == 'Vouacapoua americana'&
+                   dt$time < '2023-03-30 01:15:00',])+
+  geom_line(mapping = aes(time,StWC))+
+  geom_line(mapping = aes(time, StWC.T), col = 'red')
+                                           # this plot will help visualise the t-bias
+```
 
 Please note that our findigs suggest that there are species-specific random variations in the intercepts which negatively affect the accuracy of the measurements when working with different species. However, we found that the slope of the calibration is _universal_ for woody tissue in general. Hence, the calibration can be used to estimate __relative__ changes in stem water content or stem water deficits from the maximum accurately.
 
 The intercept becomes unimportant when Normalizing the water content data; Here is an example of how to calculate stem water deficit from the maximum value:
 
 ```R
- Create an empty column for deficit
+# Create an empty column for water deficit (relative to the maximum saturation within the dataset)
 dt$def <- NA
+# Another option is to create a column for relative water content
+dt$rwc <- NA
 
 # Loop through each species
 for (species in unique(dt$species)) {
   # Subset the data for the current species
   sub_dt <- dt[dt$species == species, ]
   
-  # Find the maximum saturation value for the current species
-  StWC_max <- max(sub_dt$StWC, na.rm = TRUE)
+  # Find the maximum/minimum saturation value for the current species
+  StWC_max <- max(sub_dt$StWC.T, na.rm = TRUE)
+  StWC_min <- min(sub_dt$StWC.T, na.rm = TRUE)
   
-  # Calculate RWC for the current species using the modified intercept
-  sub_dt$def <- sub_dt$StWC - StWC_max
+  # Calculate water deficit/RWC for the current species
+  sub_dt$def <- sub_dt$StWC.T - StWC_max
+  sub_dt$rwc <- (dt$StWC.T - StWC_min)/(StWC_max - StWC_min)
   
   # Merge the calculated RWC values back into the main dataset
   dt[dt$species == species, "def"] <- sub_dt$def
+  dt[dt$species == species, "rwc"] <- sub_dt$rwc
 }
 ```
 
+ <img align = "left" dpi = 3000 width = "320" height = "280" src= https://github.com/lionmartius/Splish-Splash-Sap/assets/146541125/65fb286c-5f4b-4f0d-8e13-bd886ff51a31 >
 
 
                      
+
+https://github.com/lionmartius/Splish-Splash-Sap/assets/146541125/06915e99-6972-4965-8eb6-2133f4e7719c
+
+
 
