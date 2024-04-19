@@ -145,11 +145,11 @@ Have a lovely time in the field & bom campo e bom trabalho!
 
 Lion 🌴
 
- <img align = "right" dpi = 3000 width = "320" height = "250" src= https://github.com/lionmartius/Splish-Splash-Sap/assets/146541125/65fb286c-5f4b-4f0d-8e13-bd886ff51a31 >
+ <img align = "right" dpi = 3000 width = "300" height = "230" src= https://github.com/lionmartius/Splish-Splash-Sap/assets/146541125/65fb286c-5f4b-4f0d-8e13-bd886ff51a31 >
  
- <img align = "centre" dpi = 3000 width = "320" height = "250" src= https://github.com/lionmartius/Splish-Splash-Sap/assets/146541125/3c9796d2-a77a-4878-bf63-72f8d6340126>
+ <img align = "centre" dpi = 3000 width = "300" height = "230" src= https://github.com/lionmartius/Splish-Splash-Sap/assets/146541125/3c9796d2-a77a-4878-bf63-72f8d6340126>
  
-<img align = "left" dpi = 3000 width = "320" height = "250" src = "https://github.com/lionmartius/Splish-Splash-Sap/assets/146541125/333ce9f4-10f7-4891-ab0c-4b765ffd816d">
+<img align = "left" dpi = 3000 width = "300" height = "230" src = "https://github.com/lionmartius/Splish-Splash-Sap/assets/146541125/333ce9f4-10f7-4891-ab0c-4b765ffd816d">
 
                      
 
