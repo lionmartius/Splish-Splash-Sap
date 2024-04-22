@@ -54,9 +54,13 @@ https://github.com/lionmartius/Splish-Splash-Sap/assets/146541125/1f809ab7-2871-
 
 **5) Install FDR/TDR sensor into the tree**. Use a dead blow mallet to gently hammer the sensor into the wood, and ensure that there is close contact with the tree with no obvious air gaps between the sensor and the wood.
 
+
+https://github.com/lionmartius/Splish-Splash-Sap/assets/146541125/2b18d052-17e1-4ece-a2d0-5be492c29550
+
 **6) Seal the sensor**. Use a silicon based sealant to seal the sensor's head to the woody tissue. It is important to ensure that there is no interaction with the atmosphere as the protective layer of the bark has been removed. This could lead to the locally drying of the wood at the installation site or water condensation at the sensor, affecting sensor readings.
 
 **7) Connect your sensor to a datalogger** & collect your water content data.
+
 
 
 ## Data processing 
