@@ -1,0 +1,8 @@
+# Ignore all files in these directories but keep the folders
+Data/**/*.xlsx
+Data/**/*.txt
+Data/**/*.csv
+Data/**/**/*.tiff
+Data/**/*.pdf
+
+.DS_Store
