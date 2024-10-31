@@ -1,4 +1,6 @@
 # Functions for processing stem water content data from ZL6 Loggers (Labcell)
+# Authors: Pablo Sanchez-Martinez & Lion R. Martius
+
 
 source("config.r")
 
