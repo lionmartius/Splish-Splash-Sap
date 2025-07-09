@@ -94,18 +94,17 @@ $θ_{\text{stem}}=0.2227\times \sqrtε_{\text{stem}}-0.396 $
 dt$StWC <- 0.2227 * dt$ep.sqrt - 0.396
 ```
 ### Applying temperature corrections
-Our findings suggested that FDR sensors are highly temperature sensitive, which can lead to artefactual changes in water content. If the sensor is exposed to larger diurnal or seasonal temperature fluctuations, especially in highly seasonal ecosystems, it is important to apply the following temperature correction:
+Our findings suggested that FDR sensors are temperature sensitive, which can lead to bias in measuring water content. If the sensor is exposed to larger diurnal or seasonal temperature fluctuations, especially in highly seasonal ecosystems, it is important to apply the following temperature correction relative to the factory reference temperature (25°C):
 
 ```R
 # Apply temperature correction
-mean(dt$t, na.rm = T) # mean T is a suitable reference point
-                      # 25.3°C 
-dt$t_diff <- as.numeric(dt$t) - mean(dt$t, na.rm = T)
-                      # calculate t - difference from reference (mean)
-t_effect <- -0.000974 # temperature effect coefficient (from our study)
+t_ref <- 25           # reference temperature 
+dt$t_diff <- as.numeric(dt$t) - t_ref
+                      # calculate t - difference from reference (25°C)
+t_effect <- -0.000974 # temperature effect coefficient (from Martius et al. (2024))
 
 # Temperature correction - StWC.T
-dt$StWC.T <- dt$StWC - dt$t_diff*t_effect  # this is the column for the temperature
+dt$StWC.T <- dt$StWC + dt$t_diff*t_effect  # this is the column for the temperature
                                            # corrected stem water content
 require(ggplot2)
 ggplot(data = dt[dt$species == 'Vouacapoua americana'&
