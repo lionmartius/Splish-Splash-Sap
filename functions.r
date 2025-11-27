@@ -33,9 +33,9 @@ fetchTeros12 <- function(folderIn = NULL,
     
     all_sheets_long.df <- data.frame("timestamp" = character(), 
                                      "label" = character(),
-                                     "water_content_m3.m3" = numeric(),
-                                     "soil_temperature_C" = numeric(),
-                                     "bulk_EC_mS.cm" = numeric())
+                                     "raw_stwc" = numeric(),
+                                     "temp_C" = numeric(),
+                                     "bulk_EC" = numeric())
     
     for(dataSheet in processed_data_sheets){
       
@@ -63,9 +63,9 @@ fetchTeros12 <- function(folderIn = NULL,
       
       long.df <- data.frame("timestamp" = character(), 
                             "label" = character(),
-                            "water_content_m3.m3" = numeric(),
-                            "soil_temperature_C" = numeric(),
-                            "bulk_EC_mS.cm" = numeric())
+                            "raw_stwc" = numeric(),
+                            "temp_C" = numeric(),
+                            "bulk_EC" = numeric())
       
       # Identify ports with WC data
       
@@ -80,11 +80,11 @@ fetchTeros12 <- function(folderIn = NULL,
           ind_long.df <- data.frame(
             "timestamp" = wide.df[, "timestamp"],
             "label" = paste0(loggerName, "_", port),
-            "water_content_m3.m3" = wide.df[, paste0(port, ".m3/m3_Water_Content")],
-            "soil_temperature_C" = ifelse(paste0(port, ".C_Soil_Temperature") %in% names(wide.df), 
+            "raw_stwc" = wide.df[, paste0(port, ".m3/m3_Water_Content")],
+            "temp_C" = ifelse(paste0(port, ".C_Soil_Temperature") %in% names(wide.df), 
                                           wide.df[, paste0(port, ".C_Soil_Temperature")], 
                                           NA),  # to avoid problems with basic loggers (which don't measure temperature or bulk density)
-            "bulk_EC_mS.cm" = ifelse(paste0(port, ".mS/cm_Bulk_EC") %in% names(wide.df), 
+            "bulk_EC" = ifelse(paste0(port, ".mS/cm_Bulk_EC") %in% names(wide.df), 
                                      wide.df[, paste0(port, ".mS/cm_Bulk_EC")], 
                                      NA)  # same as with temperature
           )
@@ -155,7 +155,7 @@ processTeros12 <- function(rawDataFile = NULL,
                            by = "label", 
                            all.x = T) %>%
     mutate(date = as_date(as_datetime(timestamp)),
-           calibrated_water_content_m3.m3 = offset + (water_content_m3.m3 * multiplier)) %>%
+           v_stwc = offset + (raw_stwc * multiplier)) %>%
     select(timestamp, date, ID, treatment, species, teros12_sensor = label, everything())
   
   rslts <- list("processing_table" = labelToID,

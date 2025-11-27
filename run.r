@@ -1,12 +1,11 @@
 #### STEM WATER CONTENT (TEROS12) DATA PROCESSING  ######################
 
-
 source("config.R")
 source("functions.r")
 
 # STEP 1: set the location of the original data to process and the files where we want the output to be stored
 
-raw_folder_in <- paste0(DATA_PATH, "data_original")
+raw_folder_in <- paste0(DATA_PATH, "data_original/theta")
 raw_file_out <- paste0(DATA_PATH, "data_raw/raw_stem_water_content_", Sys.Date(), ".csv")
 processed_file_out <- paste0(DATA_PATH, "data_processed/processed_stem_water_content_",Sys.Date(),".csv")
 
@@ -17,8 +16,8 @@ raw.df <- fetchTeros12(folderIn = raw_folder_in,
                        fileOut = raw_file_out) %>%
 arrange(timestamp) %>%
   mutate(date = as_date(timestamp)) %>%
-  filter(date > "2023-01-01") %>%
-  filter(date < "2025-01-01")
+  filter(date > "2025-01-01") %>%
+  filter(date < "2027-01-01")
 
 head(raw.df)
 tail(raw.df)
@@ -28,7 +27,7 @@ tail(raw.df)
 # relationship between loggers and tree ID
 
 
-labelToID.data <- read.csv(paste0(DATA_PATH, "data_original/meta/cax_meta.csv")) %>%
+labelToID.data <- read.csv(paste0(DATA_PATH, "data_original/meta/tux_meta.csv")) %>%
   filter(!is.na(logger_id)) %>%
   mutate(label = paste0(logger_id, "_", sensor_id)) %>%
   select(ID, species, label, treatment)
@@ -52,15 +51,14 @@ summary(processed.list$processed_data)
 ### out of range values
 stwc <- read.csv(paste0(DATA_PATH,"data_processed/processed_stem_water_content_",Sys.Date(),".csv"))
 
-stwc$calibrated_water_content_m3.m3[stwc$calibrated_water_content_m3.m3 < 0] <- NA
-stwc$calibrated_water_content_m3.m3[stwc$calibrated_water_content_m3.m3 > 1] <- NA
+stwc$v_stwc[stwc$v_stwc < 0] <- NA
+stwc$v_stwc[stwc$v_stwc > 1] <- NA
 
-stwc$water_content_m3.m3[stwc$water_content_m3.m3 < 0] <- NA
-stwc$water_content_m3.m3[stwc$water_content_m3.m3 > 1] <- NA
+stwc$raw_stwc[stwc$raw_stwc < 0] <- NA
+stwc$raw_stwc[stwc$raw_stwc > 1] <- NA
 
-stwc$stem_temperature_C[stwc$stem_temperature_C < 10] <- NA
-stwc$stem_temperature_C[stwc$stem_temperature_C > 50] <- NA
-
+stwc$temp_C[stwc$temp_C < 10] <- NA
+stwc$temp_C[stwc$temp_C > 50] <- NA
 head(stwc)
 tail(stwc)
 
@@ -68,13 +66,13 @@ tail(stwc)
 # According to Martius et al. 2024 (https://academic.oup.com/treephys/article/44/8/tpae076/7702471)
 
 # Apply temperature correction
-mean_t <- mean(stwc$soil_temperature_C, na.rm = T)  # mean T is a suitable reference point
+ref_t <- 25  # reference temperature (°C)
 
 t_effect <- -0.000974  # temperature effect coefficient (from above mentioned study)
 
 stwc <- stwc %>%
-  mutate(temp_diff = soil_temperature_C  - mean_t, # calculate t - difference from reference (mean)
-         temp_cor_calibrated_water_content_m3.m3 = calibrated_water_content_m3.m3 - (t_effect * temp_diff)  # Temperature correction - StWC.T
+  mutate(temp_diff = temp_C  - ref_t, # calculate t - difference from reference
+         v_stwc_tcor = v_stwc  + (t_effect * temp_diff)  # Temperature correction - StWC.T
   ) %>%
   select(-temp_diff) %>%
   arrange(ID, timestamp) %>%
@@ -106,7 +104,7 @@ for(ind in unique(stwc$ID)){
   # temp cor calibrated water content
   ind.plot <- plotTimeSeries(data = ind_data,
                              xVar = timestamp,
-                             yVar = temp_cor_calibrated_water_content_m3.m3,
+                             yVar = v_stwc_tcor,
                              xLab = "", 
                              yLab = "stem wc (m3/m3)", 
                              lineOrPoint = "line", 
@@ -116,54 +114,5 @@ for(ind in unique(stwc$ID)){
   # Save the plot
   pdf(paste0(DATA_PATH,"plots/stem_wc_", ind, "_", str_replace(unique(ind_data$species), " ", "_"),".pdf"))
   print(ind.plot)
-  dev.off()
-}
-
-
-#### DAILY DATA PLOTTING ------------------------------------------------------- ####
-
-daily_stwc <- read_csv("data_processed/stem_water_content/complete_datasets/daily_processed_stem_water_content_2023-05-02-2024-07-25.csv")
-
-for(ind in unique(daily_stwc$ID)){
-  
-  
-  # ind <- "Control_211"
-  ind_data <- daily_stwc %>%
-    filter(ID == ind)
-  # filter(date == "2023-11-12")
-  
-  # raw water content
-  ind.plot <- plotTimeSeries(data = ind_data,
-                             xVar = date,
-                             yVar = water_content_m3.m3,
-                             xLab = "", 
-                             yLab = "stem wc (m3/m3)", 
-                             lineOrPoint = "line", 
-                             colorVar = ID)
-  
-  # gap filled and calibrated water content
-  gf_ind.plot <- plotTimeSeries(data = ind_data,
-                                xVar = date,
-                                yVar = gf_clean_calibrated_water_content_m3.m3,
-                                xLab = "", 
-                                yLab = "gf cl stem wc (m3/m3)", 
-                                lineOrPoint = "line", 
-                                colorVar = ID)
-  
-  # temperature corrected gap filled and calibrated water content
-  tc_ind.plot <- plotTimeSeries(data = ind_data,
-                                xVar = date,
-                                yVar = tempCor_gf_clean_calibrated_water_content_m3.m3,
-                                xLab = "", 
-                                yLab = "tc gf cl stem wc (m3/m3)", 
-                                lineOrPoint = "line", 
-                                colorVar = ID)
-  
-  # Save the plot
-  pdf(paste0("outputs/data_plots/stem_water_content/daily/stem_wc_", ind, "_", str_replace(unique(ind_data$species), " ", "_"),".pdf"))
-  p <- ggarrange(ind.plot,
-                 gf_ind.plot,
-                 tc_ind.plot, ncol = 1, legend = "bottom", common.legend = T)
-  plot(p)
   dev.off()
 }
