@@ -9,8 +9,7 @@
 
 
 
-___Summary:___ Trees and whole forest ecosystems are becoming increasingly exposed to droughts under climate change. Accurate capture of vegetation water content will substantially advance how we quantify drought stress and related mortality risk in trees. In our publication in Tree Physiology, we established a first generic relationship between stem water content and dielectric permittivity in woody tissue, using electromagnetic sensors. This protocol is designed to facilitate the installation of electromagnetic sensors for monitoring tree water content at high temporal resolution. Here, you will be able to find a detailed description of the installation procedure (a list of DOs and DON'Ts), a list of the right tools needed for installation & scripts (R-language) for data processing. In addition, we provide you with a processing script for the ZL6 dataloggers from METER, which are commonly used together with Teros12 sensors.
- Within our study, we used modified Teros12 (Meter Group, Pullman, WA, USA) sensors, with shortened waveguides (3 cm) to assure that the signal is dominated by sapwood water content, as uncertainties remain on the physiological functionality of the heartwood. Please adjust the protocol if other sensor types or waveguide lengths are chosen, accordingly.
+___Summary:___ Trees and whole forest ecosystems are becoming increasingly exposed to droughts under climate change. Accurate capture of vegetation water content will substantially advance how we quantify drought stress and related mortality risk in trees. In our latest publication, we established a first generic relationship between stem water content and dielectric permittivity in woody tissue, using electromagnetic sensors. This protocol is designed to facilitate the installation of electromagnetic sensors for monitoring tree water content at high temporal resolution. Here, you will be able to find a detailed description of the installation procedure (a list of DOs and DON'Ts), a list of the right tools needed for installation & scripts (R-language) for data processing. Within our study, we used modified Teros12 (Meter Group, Pullman, WA, USA) sensors, with shortened waveguides (3 cm) to assure that the signal is dominated by sapwood water content, as uncertainties remain on the physiological functionality of the heartwood. Please adjust the protocol if other sensor types or waveguide lengths are chosen, accordingly.
 
 ## Tools and Preparation
 We advise to shorten waveguides before going into the field. Sensor needle cutting should be done under high precision. Differences in needle lengths affect the intercept of the sensor readings. We cut all our Teros12 sensors to 3 cm sensor length. You will need the following tools:
@@ -64,54 +63,8 @@ https://github.com/lionmartius/Splish-Splash-Sap/assets/146541125/2b18d052-17e1-
 
 
 
-
-
-
-# Processing Stem Water Content Data from ZL6 Loggers
-
-## Overview
-
-This repository contains scripts and instructions for processing stem water content data from ZL6 Loggers.
-
-## Steps to Follow
-
-1. **Fork and Clone the Repository**
-   - Fork the repository `Splish-Splash-Sap` and clone it to your local machine.
-
-2. **Branch Information**
-   - The current branch for processing is `stwc_data_processing_ZL6`.
-
-3. **Data Storage**
-   - Store all the downloaded original ZL6 data without any pre-treatment in the folder `Data/data_original/theta`.
-   - Store the META data (follow the example for how to prepare the META data) in the folder `Data/data_original/meta`.
-
-4. **Running the Scripts**
-   - Run the scripts in the following order:
-     1. `packages`
-     2. `config`
-     3. `functions`
-     4. `processing`
-
-5. **Global Environment**
-   - `DATA_PATH` will be set as a global environment variable within your working environment.
-
-6. **Output**
-   - The processed data will be saved as one data file in the `data_processed/temp_corrected` folder.
-   - Plots will be saved for each individual as PDF files in the `plots` folder.
-
-
-## Notes
-
-- Ensure that the `DATA_PATH` is correctly set in your environment to avoid any issues with file paths.
-- Follow the example provided for preparing the META data to ensure consistency.
-
-## Contact
-
-For any questions or issues, please contact lion.martius@ed.ac.uk
-
-
-## Additional Information
-We additionally include an exemplary dataset from three tropical dicotyledonous trees (_Licania octandra_ Kuntze, _Vouacapoua americana_ Aubl., _Manilkara bidentata_ A.Chev.)  and two monocotyledonous palms (_Oenocarpus distichus_ Mart., _Astrocaryum vulgare_ Mart.) from **Floresta Nacional de Caxiuanã, Amazônia** (1°43′S, 51°27′W). 
+## Data processing 
+The repository contains an exemplary dataset from three tropical dicotyledonous trees (_Licania octandra_ Kuntze, _Vouacapoua americana_ Aubl., _Manilkara bidentata_ A.Chev.)  and two monocotyledonous palms (_Oenocarpus distichus_ Mart., _Astrocaryum vulgare_ Mart.) from **Floresta Nacional de Caxiuanã, Amazônia** (1°43′S, 51°27′W). 
 
 When using the Teros12 sensors in combination with ZL6 dataloggers, then the output will include measures of temperature, raw data and processed volumetric water content (VWC). ZL6 logger readily process the raw data measured into VWC using a mineral soil calibration.
 
@@ -141,17 +94,18 @@ $θ_{\text{stem}}=0.2227\times \sqrtε_{\text{stem}}-0.396 $
 dt$StWC <- 0.2227 * dt$ep.sqrt - 0.396
 ```
 ### Applying temperature corrections
-Our findings suggested that FDR sensors are temperature sensitive, which can lead to bias in measuring water content. If the sensor is exposed to larger diurnal or seasonal temperature fluctuations, especially in highly seasonal ecosystems, it is important to apply the following temperature correction relative to the factory reference temperature (25°C):
+Our findings suggested that FDR sensors are highly temperature sensitive, which can lead to artefactual changes in water content. If the sensor is exposed to larger diurnal or seasonal temperature fluctuations, especially in highly seasonal ecosystems, it is important to apply the following temperature correction:
 
 ```R
 # Apply temperature correction
-t_ref <- 25           # reference temperature 
-dt$t_diff <- as.numeric(dt$t) - t_ref
-                      # calculate t - difference from reference (25°C)
-t_effect <- -0.000974 # temperature effect coefficient (from Martius et al. (2024))
+mean(dt$t, na.rm = T) # mean T is a suitable reference point
+                      # 25.3°C 
+dt$t_diff <- as.numeric(dt$t) - mean(dt$t, na.rm = T)
+                      # calculate t - difference from reference (mean)
+t_effect <- -0.000974 # temperature effect coefficient (from our study)
 
 # Temperature correction - StWC.T
-dt$StWC.T <- dt$StWC + dt$t_diff*t_effect  # this is the column for the temperature
+dt$StWC.T <- dt$StWC - dt$t_diff*t_effect  # this is the column for the temperature
                                            # corrected stem water content
 require(ggplot2)
 ggplot(data = dt[dt$species == 'Vouacapoua americana'&
@@ -199,4 +153,7 @@ Lion 🌴
 <img align = "right" dpi = 3000 width = "320" height = "250" src= https://github.com/lionmartius/Splish-Splash-Sap/assets/146541125/65fb286c-5f4b-4f0d-8e13-bd886ff51a31 >
 
                      
+
+
+
 

@@ -1,0 +1,13 @@
+# Ensure the Data folder is tracked
+!Data/
+!Data/**/
+
+# Ignore specific file types in the Data folder
+Data/**/*.xlsx
+Data/**/*.txt
+Data/**/*.csv
+Data/**/**/*.tiff
+Data/**/*.pdf
+
+# Ignore other files
+.DS_Store
