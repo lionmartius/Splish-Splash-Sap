@@ -79,7 +79,7 @@ This repository contains scripts and instructions for processing stem water cont
    - Fork the repository `Splish-Splash-Sap` and clone it to your local machine.
 
 2. **Branch Information**
-   - The current branch for processing is `stwc_data_processing_ZL6`.
+   - The current branch for processing is `main`.
 
 3. **Data Storage**
    - Store all the downloaded original ZL6 data without any pre-treatment in the folder `Data/data_original/theta`.
