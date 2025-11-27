@@ -90,7 +90,7 @@ This repository contains scripts and instructions for processing stem water cont
      1. `packages`
      2. `config`
      3. `functions`
-     4. `processing`
+     4. `run`
 
 5. **Global Environment**
    - `DATA_PATH` will be set as a global environment variable within your working environment.
