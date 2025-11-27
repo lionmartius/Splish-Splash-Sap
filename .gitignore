@@ -1,13 +1,16 @@
-# Ensure the Data folder is tracked
-!Data/
-!Data/**/
+# Track Data folder structure but ignore file contents
+# First, ignore everything in Data
+Data/**
 
-# Ignore specific file types in the Data folder
-Data/**/*.xlsx
-Data/**/*.txt
-Data/**/*.csv
-Data/**/**/*.tiff
-Data/**/*.pdf
+# Then, include the directories back
+!Data/
+!Data/*/
+!Data/*/*/
+!Data/*/*/*/
+!Data/*/*/*/*/
+
+# Add .gitkeep files to preserve empty directories
+!Data/**/.gitkeep
 
 # Ignore other files
 .DS_Store
