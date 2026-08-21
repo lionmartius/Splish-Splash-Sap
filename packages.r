@@ -12,7 +12,8 @@ packages <- c("readr",
               "interactions",
               "stringr",
               "data.table",
-              "readxl")
+              "readxl" ,
+              "summarytools")
 
 for (package in packages) {
     if (!require(package, character.only = TRUE)) {

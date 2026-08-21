@@ -1,13 +1,16 @@
 #### STEM WATER CONTENT (TEROS12) DATA PROCESSING  ######################
-
+rm(list = ls())
 source("config.R")
 source("functions.r")
 
 # STEP 1: set the location of the original data to process and the files where we want the output to be stored
 
-raw_folder_in <- paste0(DATA_PATH, "data_original/theta")
-raw_file_out <- paste0(DATA_PATH, "data_raw/raw_stem_water_content_", Sys.Date(), ".csv")
-processed_file_out <- paste0(DATA_PATH, "data_processed/processed_stem_water_content_",Sys.Date(),".csv")
+# if more than one field site is present, we can create a vector with the paths
+field_loc <- "PPF"
+
+raw_folder_in <- paste0(DATA_PATH, "data_original/", field_loc, "/theta")
+raw_file_out <- paste0(DATA_PATH, "data_raw/", field_loc, "_raw_stem_water_content_", Sys.Date(), ".csv")
+processed_file_out <- paste0(DATA_PATH, "data_processed/", field_loc, "_processed_stem_water_content_",Sys.Date(),".csv")
 
 # STEP 2: apply the functions to fetch the original data and process it
 # set your filtered dates
@@ -27,7 +30,7 @@ tail(raw.df)
 # relationship between loggers and tree ID
 
 
-labelToID.data <- read.csv(paste0(DATA_PATH, "data_original/meta/tux_meta.csv")) %>%
+labelToID.data <- read.csv(paste0(DATA_PATH, "data_original/", field_loc, "/meta/", field_loc, "_meta.csv")) %>%
   filter(!is.na(logger_id)) %>%
   mutate(label = paste0(logger_id, "_", sensor_id)) %>%
   select(ID, species, label, treatment)
@@ -49,14 +52,17 @@ summary(processed.list$processed_data)
 #### DATA CLEANING ------------------------------------------------------------- ####
 
 ### out of range values
-stwc <- read.csv(paste0(DATA_PATH,"data_processed/processed_stem_water_content_",Sys.Date(),".csv"))
+stwc <- read.csv(paste0(DATA_PATH,"data_processed/", field_loc, "_processed_stem_water_content_2026-08-21.csv"))
 
-stwc$v_stwc[stwc$v_stwc < 0] <- NA
+quantile(stwc$v_stwc, probs = seq(0, 1, 0.01), na.rm = TRUE)
+stwc$v_stwc[stwc$v_stwc < 0.08] <- NA
 stwc$v_stwc[stwc$v_stwc > 1] <- NA
 
-stwc$raw_stwc[stwc$raw_stwc < 0] <- NA
+quantile(stwc$raw_stwc, probs = seq(0, 1, 0.01), na.rm = TRUE)
+stwc$raw_stwc[stwc$raw_stwc < 0.08] <- NA
 stwc$raw_stwc[stwc$raw_stwc > 1] <- NA
 
+quantile(stwc$temp_C, probs = seq(0, 1, 0.01), na.rm = TRUE)
 stwc$temp_C[stwc$temp_C < 10] <- NA
 stwc$temp_C[stwc$temp_C > 50] <- NA
 head(stwc)
@@ -84,12 +90,12 @@ summary(stwc)
 ## to project directory
 
 write_csv(stwc, 
-          paste0(DATA_PATH, "data_processed/temp_corrected/processed_stem_water_content_", 
+          paste0(DATA_PATH, "data_processed/temp_corrected/", field_loc, "_processed_stem_water_content_", 
                  as_date(min(stwc$timestamp)), "-", 
                  as_date(max(stwc$timestamp)), ".csv")
 )
 
-
+view(dfSummary(stwc))
 #### SUBDAILY DATA PLOTTING ---------------------------------------------------- ####
 
 stwc$timestamp <- as.POSIXct(stwc$timestamp, format = "%Y-%m-%dT %H:%M:%S")
@@ -112,7 +118,7 @@ for(ind in unique(stwc$ID)){
     scale_x_datetime(date_breaks = "1 month", date_labels = "%b")
  
   # Save the plot
-  pdf(paste0(DATA_PATH,"plots/stem_wc_", ind, "_", str_replace(unique(ind_data$species), " ", "_"),".pdf"))
+  pdf(paste0(DATA_PATH,"plots/", field_loc, "/stem_wc_", ind, "_", str_replace(unique(ind_data$species), " ", "_"),".pdf"))
   print(ind.plot)
   dev.off()
 }
