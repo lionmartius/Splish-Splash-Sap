@@ -52,7 +52,8 @@ summary(processed.list$processed_data)
 #### DATA CLEANING ------------------------------------------------------------- ####
 
 ### out of range values
-stwc <- read.csv(paste0(DATA_PATH,"data_processed/", field_loc, "_processed_stem_water_content_2026-08-21.csv"))
+## TODO change date for current data
+stwc <- read.csv(paste0(DATA_PATH,"data_processed/", field_loc, "_processed_stem_water_content_2026-08-24.csv"))
 
 quantile(stwc$v_stwc, probs = seq(0, 1, 0.01), na.rm = TRUE)
 stwc$v_stwc[stwc$v_stwc < 0.08] <- NA
@@ -94,6 +95,10 @@ write_csv(stwc,
                  as_date(min(stwc$timestamp)), "-", 
                  as_date(max(stwc$timestamp)), ".csv")
 )
+
+
+
+### FINAL CHECKS 
 
 view(dfSummary(stwc))
 #### SUBDAILY DATA PLOTTING ---------------------------------------------------- ####

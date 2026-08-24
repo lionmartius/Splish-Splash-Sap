@@ -23,7 +23,7 @@ theta <- theta[seq_len(nrow(stwc)), , drop = FALSE]
 
 theta$unique_id <- stwc$ID
 theta$tmstmp <- stwc$timestamp
-theta$tmstmp_fmt <- "yyyy-mm-dd HH:MM:SS"
+theta$tmstmp_fmt <- "%Y-%m-%dT%H:%M:%OSZ"
 theta$tmz <- "UTC-03:00"
 theta$ep <- NA
 theta$raw_v <- NA

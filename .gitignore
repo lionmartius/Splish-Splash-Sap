@@ -1,16 +1,16 @@
-# Track Data folder structure but ignore file contents
-# First, ignore everything in Data
-Data/**
+# Ignore all files by default; only R and R Markdown scripts are allowed.
+*
 
-# Then, include the directories back
-!Data/
-!Data/*/
-!Data/*/*/
-!Data/*/*/*/
-!Data/*/*/*/*/
+# Keep directories traversable so scripts in any folder can be tracked.
+!*/
 
-# Add .gitkeep files to preserve empty directories
-!Data/**/.gitkeep
+# Allow R and R Markdown scripts, regardless of capitalization.
+!*.r
+!*.R
+!*.rmd
+!*.Rmd
 
-# Ignore other files
+# Keep the repository ignore policy under version control.
+!.gitignore
+
 .DS_Store
