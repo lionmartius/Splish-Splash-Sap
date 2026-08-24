@@ -1,14 +1,25 @@
-# Ignore all files by default; only R and R Markdown scripts are allowed.
+# Ignore all files by default.
 *
 
-# Keep directories traversable so scripts in any folder can be tracked.
+# Keep directories traversable so allowed files can be tracked.
 !*/
 
-# Allow R and R Markdown scripts, regardless of capitalization.
+# Allow R and R Markdown scripts everywhere.
 !*.r
 !*.R
 !*.rmd
 !*.Rmd
+
+# Allow Excel and CSV files only in SteW_templates.
+!SteW_templates/
+!SteW_templates/**/*.xls
+!SteW_templates/**/*.xlsx
+!SteW_templates/**/*.csv
+
+# Keep SteW_folder_out as an empty tracked directory.
+!SteW_folder_out/
+SteW_folder_out/*
+!SteW_folder_out/.gitkeep
 
 # Keep the repository ignore policy under version control.
 !.gitignore
